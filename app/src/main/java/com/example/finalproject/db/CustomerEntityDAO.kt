@@ -14,6 +14,6 @@ interface CustomerEntityDAO {
     fun deleteCustomer(customer: CustomerEntity)
 
     @Transaction
-    @Query("SELECT * FROM customer_table")
-    fun getCustomerWithAccounts(): List<CustomerWithAccounts>
+    @Query("SELECT * FROM customer_table WHERE customerId = :customerId")
+    fun getCustomerAccounts(customerId: Int): List<CustomerWithAccounts>
 }
