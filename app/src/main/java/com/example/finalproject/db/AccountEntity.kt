@@ -8,5 +8,7 @@ data class AccountEntity(
     @PrimaryKey(autoGenerate = true)
     var accountId: Int,
     var type: String,
-    var name: String
+    var name: String,
+    var balance: Double,
+    var currency: String
 )
