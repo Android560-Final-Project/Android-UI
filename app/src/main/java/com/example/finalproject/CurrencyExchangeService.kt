@@ -7,5 +7,5 @@ import retrofit2.http.Query
 
 interface CurrencyExchangeService {
     @GET("businesses/search")
-    fun SearchYelp(@Query("term") searchTerm: String, @Query("location") location: String): Call<Int>
+    fun GetExchangeRate(@Query("term") searchTerm: String, @Query("location") location: String): Call<Int>
 }
