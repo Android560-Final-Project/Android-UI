@@ -1,5 +1,7 @@
 package com.example.finalproject.ui.transactions
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +12,10 @@ import com.example.finalproject.db.CurrencyTypes
 import com.example.finalproject.db.TransactionEntity
 import kotlinx.android.synthetic.main.row_item.view.*
 import java.text.NumberFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
-class TransactionsRecyclerAdapter(private val transactions: ArrayList<TransactionEntity>): RecyclerView.Adapter<TransactionsRecyclerAdapter.MyViewHolder>() {
+class TransactionsRecyclerAdapter(private val transactions: ArrayList<TransactionEntity>, private val currencyLocale: Locale): RecyclerView.Adapter<TransactionsRecyclerAdapter.MyViewHolder>() {
     private val TAG = "TransactionsRecycler"
     // inflate layout from row_item.xml and return the holder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -25,12 +29,15 @@ class TransactionsRecyclerAdapter(private val transactions: ArrayList<Transactio
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val currency = CurrencyTypes.values().find { type -> type.currencyCode == "US" }
-        val currencyFormat = NumberFormat.getCurrencyInstance(currency?.locale)
+        val currencyFormat = NumberFormat.getCurrencyInstance(currencyLocale)
 
         val currentTransaction = transactions[position]
         holder.transactionName.text = currentTransaction.transactionName
         holder.amount.text = currencyFormat.format(currentTransaction.amount)
+        if (currentTransaction.amount > 0)
+            holder.amount.setTextColor(Color.GREEN)
+        else
+            holder.amount.setTextColor(Color.RED)
         holder.date.text = currentTransaction.date.toString()
     }
 
