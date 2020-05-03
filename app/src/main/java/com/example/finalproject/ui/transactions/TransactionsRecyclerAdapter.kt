@@ -1,6 +1,5 @@
 package com.example.finalproject.ui.transactions
 
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,12 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.db.CurrencyTypes
 import com.example.finalproject.db.TransactionEntity
 import kotlinx.android.synthetic.main.row_item.view.*
 import java.text.NumberFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class TransactionsRecyclerAdapter(private val transactions: ArrayList<TransactionEntity>, private val currencyLocale: Locale): RecyclerView.Adapter<TransactionsRecyclerAdapter.MyViewHolder>() {
     private val TAG = "TransactionsRecycler"
@@ -33,12 +30,19 @@ class TransactionsRecyclerAdapter(private val transactions: ArrayList<Transactio
 
         val currentTransaction = transactions[position]
         holder.transactionName.text = currentTransaction.transactionName
-        holder.amount.text = currencyFormat.format(currentTransaction.amount)
-        if (currentTransaction.amount > 0)
+        if (currentTransaction.amount > 0) {
+            holder.amount.text = currencyFormat.format(currentTransaction.amount)
             holder.amount.setTextColor(Color.GREEN)
-        else
+        }
+        else {
             holder.amount.setTextColor(Color.RED)
+            holder.amount.text = currencyFormat.format(currentTransaction.amount * -1)
+        }
         holder.date.text = currentTransaction.date.toString()
+        if (position % 2 == 1)
+            holder.itemView.setBackgroundColor(Color.LTGRAY)
+        else
+            holder.itemView.setBackgroundColor(Color.WHITE)
     }
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

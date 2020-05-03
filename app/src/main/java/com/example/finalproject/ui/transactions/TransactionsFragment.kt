@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.example.finalproject.R
@@ -24,8 +26,7 @@ class TransactionsFragment : Fragment() {
     }
 
     private lateinit var transactionViewModel: TransactionsViewModel
-    private lateinit var transactions: ArrayList<TransactionEntity>
-    private lateinit var accountLocale: Locale
+    private var accountLocale: Locale = Locale.US
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +39,7 @@ class TransactionsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         transactionViewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory()).get(TransactionsViewModel::class.java)
         transactionViewModel.transactions.observe(requireActivity(), Observer {
-            transactions = it
+            transactionList.addAll(it)
         })
         transactionViewModel.currencyLocale.observe(requireActivity(), Observer {
             accountLocale = it
@@ -51,9 +52,9 @@ class TransactionsFragment : Fragment() {
             account_balance.text = currencyLocale.format(it)
         })
 
-        val adapter = TransactionsRecyclerAdapter(transactions, accountLocale);
+        val adapter = TransactionsRecyclerAdapter(transactionList, accountLocale);
         transactions_recyler_view.adapter = adapter
-        transactions_recyler_view.layoutManager = LinearLayoutManager(requireContext())
+        transactions_recyler_view.layoutManager = LinearLayoutManager(context)
     }
 
 }
