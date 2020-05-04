@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.example.finalproject.CurrencyExchangeService
@@ -60,7 +61,10 @@ class AddTransactionFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory()).get(AddTransactionViewModel::class.java)
-        // TODO: Use the ViewModel
+
+        viewModel.accountDetails.observe(requireActivity(), Observer {
+            // ToDo set data bidings
+        });
 
         accountList = ArrayList<AccountEntity>()
         accountList.add(AccountEntity(1, "checking", "Account1", 100.0, CurrencyType.USD.currencyCode))
@@ -74,9 +78,6 @@ class AddTransactionFragment : Fragment() {
         val accountNameAdapter = ArrayAdapter<String>(activity!!.baseContext, android.R.layout.simple_spinner_dropdown_item, accountNames)
         account_spinner.adapter = accountNameAdapter
         account_spinner.onItemSelectedListener = accountSelected()
-
-
-
 
         val currencyTypeAdapter = ArrayAdapter<String>(activity!!.baseContext, android.R.layout.simple_spinner_dropdown_item, currencyList)
 
