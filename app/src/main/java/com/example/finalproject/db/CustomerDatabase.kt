@@ -1,8 +1,11 @@
 package com.example.finalproject.db
 
+import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.finalproject.SingletonHolder
 
 @Database(entities = [AccountEntity::class,
                         CustomerEntity::class,
@@ -16,4 +19,12 @@ abstract class CustomerDatabase : RoomDatabase() {
     abstract fun customerEntityDAO(): CustomerEntityDAO
 
     abstract fun transactionEntityDAO(): TransactionEntityDAO
+
+    abstract fun customerWithAccountDAO(): CustomerWithAccountDAO
+
+    companion object : SingletonHolder<CustomerDatabase, Context>({
+        Room.databaseBuilder(it.applicationContext,
+                CustomerDatabase::class.java,
+                "customer.db").build()
+    })
 }

@@ -13,7 +13,6 @@ interface CustomerEntityDAO {
     @Delete
     fun deleteCustomer(customer: CustomerEntity)
 
-    @Transaction
-    @Query("SELECT * FROM customer_table WHERE customerId = :customerId")
-    fun getCustomerAccounts(customerId: Int): List<CustomerWithAccounts>
+    @Query("SELECT * FROM customer_table WHERE email = :email")
+    fun getCustomer(email: String): CustomerEntity
 }
