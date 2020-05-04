@@ -13,4 +13,7 @@ interface AccountEntityDAO {
 
     @Delete
     fun deleteAccount(account: AccountEntity)
+
+    @Query("SELECT * FROM account_table")
+    fun getAllAccounts(): List<AccountEntity>
 }

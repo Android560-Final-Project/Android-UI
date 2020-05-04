@@ -3,4 +3,11 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="currency_choice">What currency is the transaction in?</string>
+    <string name="transaction_amount">Transaction Amount</string>
+    <string name="account">Account</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_transaction">Add Transaction</string>
+    <string name="exchange_rate">"Exchange Rate: "</string>
+    <string name="actual_cost">Total Cost:</string>
 </resources>
