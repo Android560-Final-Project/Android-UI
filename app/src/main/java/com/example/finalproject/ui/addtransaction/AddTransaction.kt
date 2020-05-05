@@ -19,21 +19,14 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class AddTransactionActivity : Activity() {
+class AddTransaction : Activity() {
     val TAG = "ADD_TRANSACTION"
     val BASE_URL = "https://exchangerateservice.firebaseapp.com/"
-    val currencyList = listOf(CurrencyType.EUR.currencyCode, CurrencyType.JPY.currencyCode, CurrencyType.GBP.currencyCode, CurrencyType.USD.currencyCode)
     private lateinit var currencyApi: CurrencyExchangeService
     var accountCurrencyType: String = "USD"
     var exchangeRate = 1.0;
 //    val accountDatabase = Room.databaseBuilder(requireContext(), CustomerDatabase::class.java, "customerDB").build()
 
-
-    companion object {
-        fun newInstance() = AddTransactionActivity()
-    }
-
-    private lateinit var viewModel: AddTransactionViewModel
     private lateinit var accountList: ArrayList<AccountEntity>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,9 +55,9 @@ class AddTransactionActivity : Activity() {
         account_spinner.adapter = accountNameAdapter
         account_spinner.onItemSelectedListener = accountSelected()
 
-        val currencyTypeAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, currencyList)
+        val currencyList = resources.getStringArray(R.array.CurrencyTypes)
 
-        currency_type.adapter = currencyTypeAdapter
+
         currency_type.onItemSelectedListener = currencyTypeOnSelectedListener()
 
         currency_type.setSelection(currencyList.indexOf(accountCurrencyType))
@@ -83,7 +76,6 @@ class AddTransactionActivity : Activity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
-
         })
     }
 

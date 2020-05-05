@@ -10,4 +10,9 @@
     <string name="add_transaction">Add Transaction</string>
     <string name="exchange_rate">"Exchange Rate: "</string>
     <string name="actual_cost">Total Cost:</string>
+    <string name="currency_type">Currency Type</string>
+    <string name="account_name">Account Name</string>
+    <string name="account_type">Account Type</string>
+    <string name="account_value">Account Value</string>
+    <string name="create_account">Create Account</string>
 </resources>

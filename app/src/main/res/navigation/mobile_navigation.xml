@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/addTransactionFragment"
-        android:name="com.example.finalproject.ui.addtransaction.AddTransactionActivity"
+        android:name="com.example.finalproject.ui.addtransaction.AddTransaction"
         android:label="add_transaction_fragment"
         tools:layout="@layout/add_transaction_activity" />
 </navigation>

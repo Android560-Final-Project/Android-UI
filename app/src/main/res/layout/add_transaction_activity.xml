@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.addtransaction.AddTransactionActivity">
+    tools:context=".ui.addtransaction.AddTransaction">
 
     <TextView
         android:id="@+id/account_name"
@@ -43,6 +43,7 @@
         android:layout_width="214dp"
         android:layout_height="30dp"
         android:layout_marginTop="16dp"
+        android:entries="@array/CurrencyTypes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/transaction_currency" />
