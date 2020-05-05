@@ -1,31 +1,25 @@
 package com.example.finalproject.ui.addtransaction
 
+import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
 import com.example.finalproject.CurrencyExchangeService
-
 import com.example.finalproject.R
+
 import com.example.finalproject.db.*
-import kotlinx.android.synthetic.main.add_transaction_fragment.*
+import kotlinx.android.synthetic.main.add_transaction_activity.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class AddTransactionFragment : Fragment() {
+class AddTransactionActivity : Activity() {
     val TAG = "ADD_TRANSACTION"
     val BASE_URL = "https://exchangerateservice.firebaseapp.com/"
     val currencyList = listOf(CurrencyType.EUR.currencyCode, CurrencyType.JPY.currencyCode, CurrencyType.GBP.currencyCode, CurrencyType.USD.currencyCode)
@@ -36,16 +30,15 @@ class AddTransactionFragment : Fragment() {
 
 
     companion object {
-        fun newInstance() = AddTransactionFragment()
+        fun newInstance() = AddTransactionActivity()
     }
 
     private lateinit var viewModel: AddTransactionViewModel
     private lateinit var accountList: ArrayList<AccountEntity>
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.add_transaction_activity)
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -55,31 +48,21 @@ class AddTransactionFragment : Fragment() {
 
 //        accountNames = accountDatabase.accountEntityDAO().getAllAccounts()
 
-        return inflater.inflate(R.layout.add_transaction_fragment, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory()).get(AddTransactionViewModel::class.java)
-
-        viewModel.accountDetails.observe(requireActivity(), Observer {
-            // ToDo set data bidings
-        });
 
         accountList = ArrayList<AccountEntity>()
-        accountList.add(AccountEntity(1, "checking", "Account1", 100.0, CurrencyType.USD.currencyCode))
-        accountList.add(AccountEntity(2, "checking", "Account2", 100.0, CurrencyType.USD.currencyCode))
+        accountList.add(AccountEntity("checking", "Account1", 100.0, CurrencyType.USD.currencyCode))
+        accountList.add(AccountEntity("checking", "Account2", 100.0, CurrencyType.USD.currencyCode))
 
         val accountNames = ArrayList<String>()
         accountList.forEach {
             accountNames.add(it.name)
         }
 
-        val accountNameAdapter = ArrayAdapter<String>(activity!!.baseContext, android.R.layout.simple_spinner_dropdown_item, accountNames)
+        val accountNameAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, accountNames)
         account_spinner.adapter = accountNameAdapter
         account_spinner.onItemSelectedListener = accountSelected()
 
-        val currencyTypeAdapter = ArrayAdapter<String>(activity!!.baseContext, android.R.layout.simple_spinner_dropdown_item, currencyList)
+        val currencyTypeAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, currencyList)
 
         currency_type.adapter = currencyTypeAdapter
         currency_type.onItemSelectedListener = currencyTypeOnSelectedListener()
