@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.row_item.view.*
 import java.text.NumberFormat
 import java.util.*
 
-class TransactionsRecyclerAdapter(private val transactions: ArrayList<TransactionEntity>, private val currencyLocale: Locale): RecyclerView.Adapter<TransactionsRecyclerAdapter.MyViewHolder>() {
+class TransactionsRecyclerAdapter(private val transactions: List<TransactionEntity>, private val currencyLocale: Locale): RecyclerView.Adapter<TransactionsRecyclerAdapter.MyViewHolder>() {
     private val TAG = "TransactionsRecycler"
     // inflate layout from row_item.xml and return the holder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -30,13 +30,13 @@ class TransactionsRecyclerAdapter(private val transactions: ArrayList<Transactio
 
         val currentTransaction = transactions[position]
         holder.transactionName.text = currentTransaction.transactionName
-        if (currentTransaction.amount > 0) {
+        if (currentTransaction.isDeposit) {
             holder.amount.text = currencyFormat.format(currentTransaction.amount)
             holder.amount.setTextColor(Color.GREEN)
         }
         else {
             holder.amount.setTextColor(Color.RED)
-            holder.amount.text = currencyFormat.format(currentTransaction.amount * -1)
+            holder.amount.text = currencyFormat.format(currentTransaction.amount)
         }
         holder.date.text = currentTransaction.date.toString()
         if (position % 2 == 1)

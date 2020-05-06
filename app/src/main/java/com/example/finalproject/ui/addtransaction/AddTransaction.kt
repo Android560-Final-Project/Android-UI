@@ -108,11 +108,18 @@ class AddTransaction : Activity() {
         if (!transaction_amount.text.isNullOrBlank())
         {
             var account = account_spinner.selectedItem as AccountEntity
-            var amount = transaction_amount.text.toString().toDouble()
+            var totalAmount = transaction_amount.text.toString().toDouble() * exchangeRate
+            var transactionName = transaction_name.text.toString()
+            var isDeposit = deposit.isChecked
 
-            val transaction = TransactionEntity(account.accountId, amount * exchangeRate, Date(), false, "")
+            val transaction = TransactionEntity(account.accountId, totalAmount * exchangeRate, Date(), isDeposit, transactionName)
             thread {
                 transactionDao.addTransaction(transaction)
+                if (isDeposit)
+                    account.balance = account.balance + totalAmount
+                else
+                    account.balance = account.balance - totalAmount
+                accountDao.updateAccount(account)
                 Log.d(TAG, transactionDao.getAllTransactions(account.accountId).toString())
             }
         }

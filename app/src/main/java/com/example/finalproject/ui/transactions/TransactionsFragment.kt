@@ -13,17 +13,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.example.finalproject.R
-import com.example.finalproject.db.TransactionEntity
+import com.example.finalproject.db.*
 import kotlinx.android.synthetic.main.transactions_fragment.*
 import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 class TransactionsFragment : Fragment() {
     private val TAG = "TransactionView"
-    private val transactionList: ArrayList<TransactionEntity> = ArrayList()
+    private var transactionList: List<TransactionEntity> = ArrayList()
     private lateinit var transactionViewModel: TransactionsViewModel
     private var accountLocale: Locale? = null
+    private lateinit var accountDAO: AccountEntityDAO
+    private lateinit var transactionDAO: TransactionEntityDAO
 
     companion object {
         fun newInstance() = TransactionsFragment()
@@ -33,29 +36,36 @@ class TransactionsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        accountDAO = CustomerDatabase.getInstance(requireContext()).accountEntityDAO()
+        transactionDAO = CustomerDatabase.getInstance(requireContext()).transactionEntityDAO()
         return inflater.inflate(R.layout.transactions_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         transactionViewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory()).get(TransactionsViewModel::class.java)
-        transactionViewModel.transactionsView.observe(requireActivity(), Observer {
-            accountLocale = it.currencyLocale
-            transactionList.addAll(it.transactions)
+        transactionViewModel.accountId.observe(requireActivity(), Observer {
+            thread {
+                val account = accountDAO.getAccount(it)
+                accountLocale = CurrencyType.values().find({ it.currencyCode == account.currency })?.locale
 
-            // adds account value
-            val currencyLocale = NumberFormat.getCurrencyInstance(accountLocale)
-            account_balance.text = currencyLocale.format(it.accountValue)
+                // adds account value
+                val currencyLocale = NumberFormat.getCurrencyInstance(accountLocale)
+                account_balance.text = currencyLocale.format(account.balance)
 
-            // adds account name
-            account_name.text = it.accountName
+                // adds account name
+                account_name.text = account.name
 
-            addAdapter(transactionList, accountLocale ?: Locale.US)
+                // adds transactions
+                transactionList = transactionDAO.getAllTransactions(account.accountId)
+
+                addAdapter(transactionList, accountLocale ?: Locale.US)
+            }
         })
     }
 
-    private fun addAdapter(transactions: ArrayList<TransactionEntity>, locale: Locale) {
-        val adapter = TransactionsRecyclerAdapter(transactionList, locale)
+    private fun addAdapter(transactions: List<TransactionEntity>, locale: Locale) {
+        val adapter = TransactionsRecyclerAdapter(transactions, locale)
         transactions_recyler_view.adapter = adapter
         transactions_recyler_view.layoutManager = LinearLayoutManager(context)
     }

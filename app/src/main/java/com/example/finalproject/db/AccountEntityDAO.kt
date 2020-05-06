@@ -16,4 +16,7 @@ interface AccountEntityDAO {
 
     @Query("SELECT * FROM account_table")
     fun getAllAccounts(): List<AccountEntity>
+
+    @Query("SELECT * FROM account_table WHERE accountId = :accountId")
+    fun getAccount(accountId: Int): AccountEntity
 }

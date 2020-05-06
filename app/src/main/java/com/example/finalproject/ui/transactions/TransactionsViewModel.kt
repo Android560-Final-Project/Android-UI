@@ -7,7 +7,5 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class TransactionsViewModel : ViewModel() {
-    val transactionsView = MutableLiveData<TransactionsView>()
+    val accountId = MutableLiveData<Int>()
 }
-
-data class TransactionsView(val transactions: ArrayList<TransactionEntity>, val currencyLocale: Locale, val accountName: String, val accountValue: Double)
