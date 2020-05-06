@@ -12,4 +12,8 @@ data class AccountEntity(
 ){
     @PrimaryKey(autoGenerate = true)
     var accountId: Int = 0
+
+    override fun toString():String {
+        return name
+    }
 }

@@ -1,6 +1,8 @@
 package com.example.finalproject.ui.addtransaction
 
+import android.accounts.Account
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,12 +14,15 @@ import com.example.finalproject.CurrencyExchangeService
 import com.example.finalproject.R
 
 import com.example.finalproject.db.*
-import kotlinx.android.synthetic.main.add_transaction_activity.*
+import kotlinx.android.synthetic.main.activity_add_transaction.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 class AddTransaction : Activity() {
     val TAG = "ADD_TRANSACTION"
@@ -25,13 +30,18 @@ class AddTransaction : Activity() {
     private lateinit var currencyApi: CurrencyExchangeService
     var accountCurrencyType: String = "USD"
     var exchangeRate = 1.0;
-//    val accountDatabase = Room.databaseBuilder(requireContext(), CustomerDatabase::class.java, "customerDB").build()
+    lateinit var accountDao: AccountEntityDAO
+    lateinit var transactionDao: TransactionEntityDAO
 
-    private lateinit var accountList: ArrayList<AccountEntity>
+    private var accountList: List<AccountEntity> = ArrayList<AccountEntity>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.add_transaction_activity)
+        setContentView(R.layout.activity_add_transaction)
+
+        accountDao = CustomerDatabase.getInstance(this).accountEntityDAO()
+        transactionDao = CustomerDatabase.getInstance(this).transactionEntityDAO()
+
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -39,33 +49,11 @@ class AddTransaction : Activity() {
 
         currencyApi = retrofit.create(CurrencyExchangeService::class.java)
 
-//        accountNames = accountDatabase.accountEntityDAO().getAllAccounts()
-
-
-        accountList = ArrayList<AccountEntity>()
-        accountList.add(AccountEntity("checking", "Account1", 100.0, CurrencyType.USD.currencyCode))
-        accountList.add(AccountEntity("checking", "Account2", 100.0, CurrencyType.USD.currencyCode))
-
-        val accountNames = ArrayList<String>()
-        accountList.forEach {
-            accountNames.add(it.name)
-        }
-
-        val accountNameAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, accountNames)
-        account_spinner.adapter = accountNameAdapter
-        account_spinner.onItemSelectedListener = accountSelected()
+        initAccountSpinner()
 
         val currencyList = resources.getStringArray(R.array.CurrencyTypes)
-
-
-        currency_type.onItemSelectedListener = currencyTypeOnSelectedListener()
-
         currency_type.setSelection(currencyList.indexOf(accountCurrencyType))
-
-        add_transaction.setOnClickListener{
-            if (!transaction_amount.text.isNullOrBlank())
-                Log.d(TAG, "${account_spinner.selectedItem} ${transaction_amount.text.toString().toDoubleOrNull()} from $accountCurrencyType to ${currency_type.selectedItem}}")
-        }
+        currency_type.onItemSelectedListener = currencyTypeOnSelectedListener()
 
         transaction_amount.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -77,6 +65,16 @@ class AddTransaction : Activity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
         })
+    }
+
+    private fun initAccountSpinner() {
+        thread{
+            accountList = accountDao.getAllAccounts()
+
+            val accountNameAdapter = ArrayAdapter<AccountEntity>(this, android.R.layout.simple_spinner_dropdown_item, accountList)
+            account_spinner.adapter = accountNameAdapter
+            account_spinner.onItemSelectedListener = accountSelected()
+        }
     }
 
     private fun updateTotal(amount: Double, exchangeRate: Double) {
@@ -108,7 +106,22 @@ class AddTransaction : Activity() {
 
     fun addTransaction(view: View?) {
         if (!transaction_amount.text.isNullOrBlank())
-            Log.d(TAG, "${account_spinner.selectedItem.toString()} $transaction_amount from $accountCurrencyType to ${currency_type.selectedItem.toString()} total: ${(transaction_amount.toString().toDouble() * exchangeRate).toString()}")
+        {
+            var account = account_spinner.selectedItem as AccountEntity
+            var amount = transaction_amount.text.toString().toDouble()
+
+            val transaction = TransactionEntity(account.accountId, amount * exchangeRate, Date(), false, "")
+            thread {
+                transactionDao.addTransaction(transaction)
+                Log.d(TAG, transactionDao.getAllTransactions(account.accountId).toString())
+            }
+        }
+    }
+
+    fun cancel(view: View?){
+        val myIntent = Intent()
+        setResult(Activity.RESULT_CANCELED, myIntent)
+        finish()
     }
 
     inner class currencyTypeOnSelectedListener: AdapterView.OnItemSelectedListener {
@@ -128,9 +141,7 @@ class AddTransaction : Activity() {
         }
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            var newAccount = accountList.find { account ->
-                account.name == parent?.getItemAtPosition(position)
-            }
+            var newAccount = parent?.getItemAtPosition(position) as AccountEntity
             accountCurrencyType = newAccount!!.currency
             callExchangeRateApi(currency_type.selectedItem.toString(), accountCurrencyType)
         }

@@ -6,11 +6,12 @@ import java.util.*
 
 @Entity(tableName = "transaction_table")
 data class TransactionEntity(
-    @PrimaryKey(autoGenerate = true)
-    var transactionId: Int,
     var accountId: Int,
     var amount: Double,
     var date: Date,
     var isDeposit: Boolean,
     var transactionName: String
-)
+) {
+    @PrimaryKey(autoGenerate = true)
+    var transactionId: Int = 0
+}
