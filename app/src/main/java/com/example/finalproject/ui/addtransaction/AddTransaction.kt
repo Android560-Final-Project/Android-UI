@@ -1,6 +1,5 @@
 package com.example.finalproject.ui.addtransaction
 
-import android.accounts.Account
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -11,8 +10,8 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.example.finalproject.CurrencyExchangeService
+import com.example.finalproject.MainActivity
 import com.example.finalproject.R
-
 import com.example.finalproject.db.*
 import kotlinx.android.synthetic.main.activity_add_transaction.*
 import retrofit2.Call
@@ -126,7 +125,7 @@ class AddTransaction : Activity() {
     }
 
     fun cancel(view: View?){
-        val myIntent = Intent()
+        val myIntent = Intent(this, MainActivity::class.java)
         setResult(Activity.RESULT_CANCELED, myIntent)
         finish()
     }

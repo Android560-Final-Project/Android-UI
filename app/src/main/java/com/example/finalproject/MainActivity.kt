@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.finalproject.db.AccountEntity
-import com.example.finalproject.db.CustomerAccountCrossRef
-import com.example.finalproject.db.CustomerDatabase
-import com.example.finalproject.db.CustomerEntity
+import com.example.finalproject.db.*
 import com.example.finalproject.ui.home.AccountsRecyclerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -18,20 +15,19 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private val exampleEmail = "example@gmail.com"
     private lateinit var accounts: ArrayList<AccountEntity>
-
-//    lateinit var viewModel: TransactionsViewModel
+    private lateinit var accountDAO: AccountEntityDAO
+    private lateinit var customerDAO: CustomerEntityDAO
+    private lateinit var customerAccountCrossRef: CustomerWithAccountDAO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         accounts = ArrayList()
+        accountDAO = CustomerDatabase.getInstance(this).accountEntityDAO()
+        customerDAO = CustomerDatabase.getInstance(this).customerEntityDAO()
+        customerAccountCrossRef = CustomerDatabase.getInstance(this).customerWithAccountDAO()
         addAdapter(Locale.ENGLISH)
         init()
-//        viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(TransactionsViewModel::class.java)
-//
-//        viewModel.accountId.value = 2
-
-
     }
 
     private fun addAdapter(locale: Locale) {
@@ -42,14 +38,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // to
+        thread {
+            val customer = customerDAO.getCustomer(exampleEmail)
+            if(customer != null) {
+                updateAccounts(customer.customerId)
+            }
+            runOnUiThread{
+                accounts_recycler_view.adapter?.notifyDataSetChanged()
+            }
+        }
     }
 
     private fun init() {
-        val accountDAO = CustomerDatabase.getInstance(this).accountEntityDAO()
-        val customerDAO = CustomerDatabase.getInstance(this).customerEntityDAO()
-        val customerAccountCrossRef = CustomerDatabase.getInstance(this).customerWithAccountDAO()
-
         thread {
             val customer = customerDAO.getCustomer(exampleEmail)
             var message: String =""
@@ -68,17 +68,22 @@ class MainActivity : AppCompatActivity() {
                 message = "Welcome new customer ${customerEntity.name}!!"
             } else {
                 Log.d(TAG, "Customer with $exampleEmail already exists. Customer id ${customer.customerId}")
-                val customerWithAccount = customerAccountCrossRef.getCustomerWithAccount(customer.customerId)
-                if(customerWithAccount != null) {
-                    accounts.addAll(customerWithAccount.accounts)
-                    message = "Welcome ${customer.name}"
-                }
+                message = "Welcome ${customer.name}"
+                updateAccounts(customer.customerId)
             }
 
             runOnUiThread{
                 accounts_recycler_view.adapter?.notifyDataSetChanged()
                 display_message.text = message
             }
+        }
+    }
+
+    private fun updateAccounts(customerId: Int) {
+        val customerWithAccount = customerAccountCrossRef.getCustomerWithAccount(customerId)
+        if(customerWithAccount != null) {
+            accounts.clear()
+            accounts.addAll(customerWithAccount.accounts)
         }
     }
 }

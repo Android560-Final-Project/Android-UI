@@ -26,9 +26,7 @@ class AccountsRecyclerAdapter(private val accounts: ArrayList<AccountEntity>, pr
         holder.balance.text = "Balance ${account.balance}"
         holder.lastTransaction.text = account.balance.toString()
         holder.addTransactionButton.setOnClickListener {
-            val intent = Intent(it.context, AddTransaction::class.java)
-            intent.putExtra("accountId", position)
-            it.context.startActivity(intent)
+            it.context.startActivity(Intent(it.context, AddTransaction::class.java))
         }
     }
 
