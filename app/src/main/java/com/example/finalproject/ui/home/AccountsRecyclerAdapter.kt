@@ -9,6 +9,7 @@ import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 import com.example.finalproject.db.AccountEntity
 import com.example.finalproject.ui.addtransaction.AddTransaction
+import com.example.finalproject.ui.transactions.ViewTransactions
 import kotlinx.android.synthetic.main.account_item.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -27,6 +28,11 @@ class AccountsRecyclerAdapter(private val accounts: ArrayList<AccountEntity>, pr
         holder.lastTransaction.text = account.balance.toString()
         holder.addTransactionButton.setOnClickListener {
             it.context.startActivity(Intent(it.context, AddTransaction::class.java))
+        }
+        holder.viewTransactionButton.setOnClickListener {
+            val intent = Intent(it.context, ViewTransactions::class.java)
+            intent.putExtra("AccountEntity", account)
+            it.context.startActivity(intent)
         }
     }
 
