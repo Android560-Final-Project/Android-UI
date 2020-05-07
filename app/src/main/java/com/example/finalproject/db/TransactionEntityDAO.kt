@@ -10,6 +10,6 @@ interface TransactionEntityDAO {
     @Delete
     fun deleteTransaction(transaction: TransactionEntity)
 
-    @Query("SELECT * FROM transaction_table WHERE transactionId = :accountId")
+    @Query("SELECT * FROM transaction_table WHERE accountId = :accountId")
     fun getAllTransactions(accountId: Int): List<TransactionEntity>
 }

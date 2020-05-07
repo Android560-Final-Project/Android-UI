@@ -9,7 +9,7 @@ data class CustomerWithAccounts(
     @Relation(
         parentColumn = "customerId",
         entityColumn = "accountId",
-        associateBy = Junction(CustomerAccountCrossRef::class)
+        entity = AccountEntity::class
     )
     val accounts: List<AccountEntity>
 )

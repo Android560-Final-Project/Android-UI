@@ -5,9 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "customer_table")
 data class CustomerEntity(
-    @PrimaryKey(autoGenerate = true)
-    var customerId: Int,
     var name: String,
     var email: String,
     var phone: String
-)
+){
+    @PrimaryKey(autoGenerate = true)
+    var customerId: Int = 0
+}

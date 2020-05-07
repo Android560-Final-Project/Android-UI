@@ -2,8 +2,8 @@ package com.example.finalproject.db
 
 import androidx.room.Entity
 
-@Entity(primaryKeys = ["accountId", "customerId"])
+@Entity(primaryKeys = ["customerId", "accountId"])
 data class CustomerAccountCrossRef(
-    val accountId: Int,
-    val customerId: Int
+    val customerId: Int,
+    val accountId: Int
 )

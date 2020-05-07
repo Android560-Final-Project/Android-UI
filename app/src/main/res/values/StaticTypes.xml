@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="CurrencyTypes">
+        <item>USD</item>
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>JPY</item>
+    </string-array>
+
+    <string-array name="AccountTypes">
+        <item>Checking</item>
+        <item>Savings</item>
+        <item>Credit Card</item>
+    </string-array>
+</resources>
