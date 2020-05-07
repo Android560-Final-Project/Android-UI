@@ -15,11 +15,17 @@ import kotlin.concurrent.thread
 class AddAccount : AppCompatActivity() {
     private val TAG = "ADD_ACCOUNT"
     private lateinit var accountDAO : AccountEntityDAO
+    private var accountId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_account)
         accountDAO = CustomerDatabase.getInstance(this).accountEntityDAO()
+        accountId = intent.getIntExtra("accountId", -1)
+    }
+
+    private fun init() {
+
     }
 
     fun cancel(view: View) {
@@ -51,7 +57,7 @@ class AddAccount : AppCompatActivity() {
             finish()
         }
         else {
-            Toast.makeText(this, "Account value & Account anme must be filled out", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "Account value & Account name must be filled out", Toast.LENGTH_SHORT).show()
         }
     }
 }

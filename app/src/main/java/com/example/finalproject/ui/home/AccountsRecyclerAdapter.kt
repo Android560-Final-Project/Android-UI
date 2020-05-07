@@ -1,11 +1,14 @@
 package com.example.finalproject.ui.home
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 import com.example.finalproject.db.AccountEntity
+import com.example.finalproject.ui.addtransaction.AddTransaction
 import kotlinx.android.synthetic.main.account_item.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -21,6 +24,12 @@ class AccountsRecyclerAdapter(private val accounts: ArrayList<AccountEntity>, pr
         val account = accounts[position]
         holder.accountName.text = account.name
         holder.balance.text = "Balance ${account.balance}"
+        holder.lastTransaction.text = account.balance.toString()
+        holder.addTransactionButton.setOnClickListener {
+            val intent = Intent(it.context, AddTransaction::class.java)
+            intent.putExtra("accountId", position)
+            it.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -31,15 +40,7 @@ class AccountsRecyclerAdapter(private val accounts: ArrayList<AccountEntity>, pr
         val accountName = itemView.account_name
         val balance = itemView.balance
         val lastTransaction = itemView.last_transaction
-
-        init {
-            itemView.view_transaction_btn.setOnClickListener{
-                // TODO -> navigate to transaction view
-            }
-
-            itemView.add_transaction_btn.setOnClickListener {
-                // TODO -> navigate to add transaction view
-            }
-        }
+        val viewTransactionButton = itemView.view_transaction_btn
+        val addTransactionButton = itemView.add_transaction_btn
     }
 }

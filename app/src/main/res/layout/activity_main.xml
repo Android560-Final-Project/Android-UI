@@ -7,13 +7,26 @@
     android:layout_height="match_parent"
     android:paddingTop="?attr/actionBarSize">
 
-    <fragment
-        android:id="@+id/fragment"
-        android:name="com.example.finalproject.ui.transactions.TransactionsFragment"
-        android:layout_width="356dp"
-        android:layout_height="568dp"
-        android:layout_marginTop="32dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/accounts_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="614dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:listitem="@layout/account_item" />
+
+    <TextView
+        android:id="@+id/display_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="placeHolder"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/accounts_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.397" />
 </androidx.constraintlayout.widget.ConstraintLayout>
