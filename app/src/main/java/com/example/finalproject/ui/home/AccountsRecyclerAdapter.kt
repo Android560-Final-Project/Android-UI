@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.account_item.view.*
 import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 class AccountsRecyclerAdapter(private val accounts: ArrayList<AccountEntity>, private val currencyLocale: Locale) : RecyclerView.Adapter<AccountsRecyclerAdapter.MyViewHolder>() {
 

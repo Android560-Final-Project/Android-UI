@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         thread {
             var customer = customerDAO.getCustomer(exampleEmail)
+            customerId = customer.customerId
             var message: String =""
 
             if(customer == null) {
