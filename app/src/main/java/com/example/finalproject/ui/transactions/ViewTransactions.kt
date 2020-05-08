@@ -52,9 +52,11 @@ class ViewTransactions : AppCompatActivity() {
     }
 
     private fun addAdapter(transactions: List<TransactionEntity>, locale: Locale) {
-        val adapter = TransactionsRecyclerAdapter(transactions, locale)
-        transactions_recyler_view.adapter = adapter
-        transactions_recyler_view.layoutManager = LinearLayoutManager(this)
+        runOnUiThread {
+            val adapter = TransactionsRecyclerAdapter(transactions, locale)
+            transactions_recyler_view.adapter = adapter
+            transactions_recyler_view.layoutManager = LinearLayoutManager(this)
+        }
     }
 
 }
