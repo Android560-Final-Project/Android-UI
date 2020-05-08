@@ -9,7 +9,6 @@ import com.example.finalproject.SingletonHolder
 
 @Database(entities = [AccountEntity::class,
                         CustomerEntity::class,
-                        CustomerAccountCrossRef::class,
                         TransactionEntity::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class CustomerDatabase : RoomDatabase() {
@@ -19,8 +18,6 @@ abstract class CustomerDatabase : RoomDatabase() {
     abstract fun customerEntityDAO(): CustomerEntityDAO
 
     abstract fun transactionEntityDAO(): TransactionEntityDAO
-
-    abstract fun customerWithAccountDAO(): CustomerWithAccountDAO
 
     companion object : SingletonHolder<CustomerDatabase, Context>({
         Room.databaseBuilder(it.applicationContext,

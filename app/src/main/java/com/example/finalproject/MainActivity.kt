@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var accounts: ArrayList<AccountEntity>
     private lateinit var accountDAO: AccountEntityDAO
     private lateinit var customerDAO: CustomerEntityDAO
-    private lateinit var customerAccountCrossRef: CustomerWithAccountDAO
     private var customerId: Int = 0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         accounts = ArrayList()
         accountDAO = CustomerDatabase.getInstance(this).accountEntityDAO()
         customerDAO = CustomerDatabase.getInstance(this).customerEntityDAO()
-        customerAccountCrossRef = CustomerDatabase.getInstance(this).customerWithAccountDAO()
         addAdapter(Locale.ENGLISH)
         init()
     }
@@ -41,11 +39,13 @@ class MainActivity : AppCompatActivity() {
         accounts_recycler_view.layoutManager = LinearLayoutManager(this)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onRestart() {
+        super.onRestart()
         thread {
+            Log.d(TAG, "ALL accounts ${accountDAO.getAllAccounts()}")
             val customer = customerDAO.getCustomer(exampleEmail)
             if(customer != null) {
+                Log.d(TAG, "Update customer $customer")
                 updateAccounts(customer.customerId)
             }
             runOnUiThread{
@@ -64,14 +64,18 @@ class MainActivity : AppCompatActivity() {
 
                 Log.d(TAG, "Customer with email $exampleEmail does not exist. Adding to DB")
                 val customerEntity = CustomerEntity("example name", exampleEmail, "860-371-8881")
-                val accountEntity = AccountEntity("checkings", "myaccount", 300.00, "USD")
-                customerDAO.addCustomer(customerEntity)
+                val customerId = customerDAO.addCustomer(customerEntity).toInt()
+                val accountEntity = AccountEntity(customerId,"checkings", "myaccount", 300.00, "USD")
+                val accountEntity2 = AccountEntity(customerId,"savings", "my-retirement-fund", 300.00, "USD")
+
                 val account1Id = accountDAO.addAccount(accountEntity)
-                val account2Id = accountDAO.addAccount(accountEntity)
-                // join relationship
-                customerAccountCrossRef.insert(CustomerAccountCrossRef(customerId, account1Id.toInt()))
-                customerAccountCrossRef.insert(CustomerAccountCrossRef(customerId, account2Id.toInt()))
-                accounts.add(accountEntity)
+                val account2Id = accountDAO.addAccount(accountEntity2)
+
+                Log.d(TAG, "account1 $account1Id")
+                Log.d(TAG, "account2 $account2Id")
+
+                Log.d(TAG, "Accounts ${accountDAO.getAccountByCustomerId(customerId)}")
+                updateAccounts(customerId)
                 message = "Welcome new customer ${customerEntity.name}!!"
             } else {
                 Log.d(TAG, "Customer with $exampleEmail already exists. Customer id $customerId")
@@ -87,13 +91,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateAccounts(customerId: Int) {
-        val customerWithAccount = customerAccountCrossRef.getCustomerWithAccount(customerId)
-        Log.d("ADD", customerWithAccount.toString())
-        if(customerWithAccount != null) {
-            accounts.clear()
-            accounts.addAll(customerWithAccount.accounts)
+        val customerAccounts = accountDAO.getAccountByCustomerId(customerId)
+        Log.d(TAG, "Customer Accounts $customerAccounts")
+        accounts.clear()
+        accounts.addAll(customerAccounts)
 
-        }
     }
 
     fun addAccount(view: View?) {

@@ -11,12 +11,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.addtransaction.AddTransaction">
+        <activity android:name=".ui.addtransaction.AddTransaction"
+                    android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
-        <activity android:name=".ui.addaccount.AddAccount"></activity>
+        <activity android:name=".ui.addaccount.AddAccount"
+                    android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"></meta-data>
+        </activity>
         <activity android:name=".ui.transactions.ViewTransactions"
                     android:parentActivityName=".MainActivity">
             <meta-data

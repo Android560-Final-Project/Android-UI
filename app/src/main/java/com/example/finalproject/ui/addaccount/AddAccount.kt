@@ -15,14 +15,12 @@ import kotlin.concurrent.thread
 class AddAccount : AppCompatActivity() {
     private val TAG = "ADD_ACCOUNT"
     private lateinit var accountDAO : AccountEntityDAO
-    private lateinit var customerWithAccountDAO: CustomerWithAccountDAO
     private var customerId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_account)
         accountDAO = CustomerDatabase.getInstance(this).accountEntityDAO()
-        customerWithAccountDAO = CustomerDatabase.getInstance(this).customerWithAccountDAO()
         customerId = intent.getIntExtra("customerId", -1)
         Log.d(TAG, customerId.toString())
     }
@@ -46,19 +44,11 @@ class AddAccount : AppCompatActivity() {
             val balance = account_value.text.toString().toDouble()
             val type = account_type.selectedItem.toString()
             val currency = currency_type.selectedItem.toString()
-            val account = AccountEntity(type, name, balance, currency)
+            val account = AccountEntity(customerId, type, name, balance, currency)
 
             thread {
-                val accountId = accountDAO.addAccount(account)
-                if (customerId != -1)
-                    customerWithAccountDAO.insert(CustomerAccountCrossRef(this.customerId, accountId.toInt()))
-                Log.d(TAG, customerWithAccountDAO.getCustomersAccounts().toString())
+                accountDAO.addAccount(account) // go back to main activity
             }
-
-            // go back to main activity
-            val myIntent = Intent()
-            setResult(Activity.RESULT_OK, myIntent)
-            finish()
         }
         else {
             Toast.makeText(this, "Account value & Account name must be filled out", Toast.LENGTH_SHORT).show()

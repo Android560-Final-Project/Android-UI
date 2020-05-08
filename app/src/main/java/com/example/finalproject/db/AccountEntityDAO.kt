@@ -5,7 +5,7 @@ import androidx.room.*
 @Dao
 interface AccountEntityDAO {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addAccount(account: AccountEntity): Long
 
     @Update
@@ -19,4 +19,7 @@ interface AccountEntityDAO {
 
     @Query("SELECT * FROM account_table WHERE accountId = :accountId")
     fun getAccount(accountId: Int): AccountEntity
+
+    @Query("SELECT * FROM account_table WHERE customerId = :customerId")
+    fun getAccountByCustomerId(customerId: Int): List<AccountEntity>
 }
