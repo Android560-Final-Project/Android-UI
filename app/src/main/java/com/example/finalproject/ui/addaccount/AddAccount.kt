@@ -7,26 +7,26 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 import com.example.finalproject.db.*
 import kotlinx.android.synthetic.main.activity_add_account.*
+import java.util.*
 import kotlin.concurrent.thread
 
 class AddAccount : AppCompatActivity() {
     private val TAG = "ADD_ACCOUNT"
     private lateinit var accountDAO : AccountEntityDAO
+    private lateinit var transactionDAO: TransactionEntityDAO
     private var customerId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_account)
         accountDAO = CustomerDatabase.getInstance(this).accountEntityDAO()
+        transactionDAO = CustomerDatabase.getInstance(this).transactionEntityDAO()
         customerId = intent.getIntExtra("customerId", -1)
         Log.d(TAG, customerId.toString())
-    }
-
-    private fun init() {
-
     }
 
     fun cancel(view: View) {
@@ -46,8 +46,14 @@ class AddAccount : AppCompatActivity() {
             val currency = currency_type.selectedItem.toString()
             val account = AccountEntity(customerId, type, name, balance, currency)
 
+
             thread {
-                accountDAO.addAccount(account) // go back to main activity
+                val accountId = accountDAO.addAccount(account).toInt() // go back to main activity
+                val transaction = TransactionEntity(accountId, balance, Date(), true, "Starting Balance")
+                transactionDAO.addTransaction(transaction)
+                val myIntent = Intent(this, MainActivity::class.java)
+                setResult(Activity.RESULT_OK, myIntent)
+                finish()
             }
         }
         else {
