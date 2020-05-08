@@ -88,7 +88,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateAccounts(customerId: Int) {
         val customerWithAccount = customerAccountCrossRef.getCustomerWithAccount(customerId)
-        Log.d("ADD", customerWithAccount.toString())
         if(customerWithAccount != null) {
             accounts.clear()
             accounts.addAll(customerWithAccount.accounts)

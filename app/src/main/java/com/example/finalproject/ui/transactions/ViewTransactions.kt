@@ -34,7 +34,7 @@ class ViewTransactions : AppCompatActivity() {
     private fun init(account: AccountEntity) {
         thread {
 
-            accountLocale = CurrencyType.values().find({ it.currencyCode == account.currency })?.locale
+            accountLocale = CurrencyType.values().find { it.currencyCode == account.currency }?.locale
 
             // adds account value
             val currencyLocale = NumberFormat.getCurrencyInstance(accountLocale)
