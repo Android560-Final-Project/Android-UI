@@ -113,7 +113,7 @@ class AddTransaction : Activity() {
             var transactionName = transaction_name.text.toString()
             var isDeposit = deposit.isChecked
 
-            val transaction = TransactionEntity(account.accountId, totalAmount * exchangeRate, Date(), isDeposit, transactionName)
+            val transaction = TransactionEntity(account.accountId, totalAmount, Date(), isDeposit, transactionName)
             thread {
                 transactionDao.addTransaction(transaction)
                 if (isDeposit)
@@ -121,17 +121,16 @@ class AddTransaction : Activity() {
                 else
                     account.balance = account.balance - totalAmount
                 accountDao.updateAccount(account)
-                Log.d(TAG, transactionDao.getAllTransactions(account.accountId).toString())
-                val myIntent = Intent(this, MainActivity::class.java)
-                setResult(RESULT_OK, myIntent)
-                finish()
             }
+            val myIntent = Intent(this, MainActivity::class.java)
+            setResult(RESULT_OK, myIntent)
+            finish()
         }
     }
 
     fun cancel(view: View?){
         val myIntent = Intent(this, MainActivity::class.java)
-        setResult(Activity.RESULT_CANCELED, myIntent)
+        setResult(RESULT_CANCELED, myIntent)
         finish()
     }
 
