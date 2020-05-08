@@ -15,13 +15,16 @@ import kotlin.concurrent.thread
 class AddAccount : AppCompatActivity() {
     private val TAG = "ADD_ACCOUNT"
     private lateinit var accountDAO : AccountEntityDAO
-    private var accountId = 0
+    private lateinit var customerWithAccountDAO: CustomerWithAccountDAO
+    private var customerId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_account)
         accountDAO = CustomerDatabase.getInstance(this).accountEntityDAO()
-        accountId = intent.getIntExtra("accountId", -1)
+        customerWithAccountDAO = CustomerDatabase.getInstance(this).customerWithAccountDAO()
+        customerId = intent.getIntExtra("customerId", -1)
+        Log.d(TAG, customerId.toString())
     }
 
     private fun init() {
@@ -46,9 +49,10 @@ class AddAccount : AppCompatActivity() {
             val account = AccountEntity(type, name, balance, currency)
 
             thread {
-                accountDAO.addAccount(account)
-                val accounts = accountDAO.getAllAccounts()
-                Log.d(TAG, accounts.toString())
+                val accountId = accountDAO.addAccount(account)
+                if (customerId != -1)
+                    customerWithAccountDAO.insert(CustomerAccountCrossRef(this.customerId, accountId.toInt()))
+                Log.d(TAG, customerWithAccountDAO.getCustomersAccounts().toString())
             }
 
             // go back to main activity

@@ -6,7 +6,7 @@ import androidx.room.*
 interface AccountEntityDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addAccount(account: AccountEntity)
+    fun addAccount(account: AccountEntity): Long
 
     @Update
     fun updateAccount(account: AccountEntity)
