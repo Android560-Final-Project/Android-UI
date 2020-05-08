@@ -42,6 +42,10 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
         thread {
+            val accounts = accountDAO.getAllAccounts()
+            for(account in accounts) {
+                Log.d(TAG, "ALL Accounts $account")
+            }
             Log.d(TAG, "ALL accounts ${accountDAO.getAllAccounts()}")
             val customer = customerDAO.getCustomer(exampleEmail)
             if(customer != null) {
@@ -64,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
                 Log.d(TAG, "Customer with email $exampleEmail does not exist. Adding to DB")
                 val customerEntity = CustomerEntity("example name", exampleEmail, "860-371-8881")
-                val customerId = customerDAO.addCustomer(customerEntity).toInt()
+                customerId = customerDAO.addCustomer(customerEntity).toInt()
                 val accountEntity = AccountEntity(customerId,"checkings", "myaccount", 300.00, "USD")
                 val accountEntity2 = AccountEntity(customerId,"savings", "my-retirement-fund", 300.00, "USD")
 
