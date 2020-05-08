@@ -6,6 +6,7 @@ import java.io.Serializable
 
 @Entity(tableName = "account_table")
 data class AccountEntity(
+    var customerId: Int,
     var type: String,
     var name: String,
     var balance: Double,
@@ -13,7 +14,6 @@ data class AccountEntity(
 ) : Serializable {
     @PrimaryKey(autoGenerate = true)
     var accountId: Int = 0
-
     override fun toString():String {
         return name
     }

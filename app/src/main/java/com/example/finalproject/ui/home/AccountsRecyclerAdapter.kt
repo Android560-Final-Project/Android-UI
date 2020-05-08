@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.account_item.view.*
 import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 class AccountsRecyclerAdapter(private val accounts: ArrayList<AccountEntity>, private val currencyLocale: Locale) : RecyclerView.Adapter<AccountsRecyclerAdapter.MyViewHolder>() {
 
@@ -35,7 +36,9 @@ class AccountsRecyclerAdapter(private val accounts: ArrayList<AccountEntity>, pr
         holder.balance.text = "Balance ${accountBalance}"
         holder.lastTransaction.text = accountBalance
         holder.addTransactionButton.setOnClickListener {
-            it.context.startActivity(Intent(it.context, AddTransaction::class.java))
+            val intent = Intent(it.context, AddTransaction::class.java)
+            intent.putExtra("accountId", account.accountId)
+            it.context.startActivity(intent)
         }
         holder.viewTransactionButton.setOnClickListener {
             val intent = Intent(it.context, ViewTransactions::class.java)

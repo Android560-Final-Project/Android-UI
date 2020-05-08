@@ -5,7 +5,7 @@ import androidx.room.*
 @Dao
 interface CustomerEntityDAO {
     @Insert
-    fun addCustomer(customer: CustomerEntity)
+    fun addCustomer(customer: CustomerEntity): Long
 
     @Update
     fun updateCustomer(customer: CustomerEntity)

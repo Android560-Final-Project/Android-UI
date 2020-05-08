@@ -73,6 +73,8 @@ class AddTransaction : Activity() {
             val accountNameAdapter = ArrayAdapter<AccountEntity>(this, android.R.layout.simple_spinner_dropdown_item, accountList)
             account_spinner.adapter = accountNameAdapter
             account_spinner.onItemSelectedListener = accountSelected()
+            var accountId = intent.getIntExtra("accountId", 0)
+            account_spinner.setSelection(accountList.indexOfFirst{ it.accountId == accountId})
         }
     }
 
@@ -119,7 +121,6 @@ class AddTransaction : Activity() {
                 else
                     account.balance = account.balance - totalAmount
                 accountDao.updateAccount(account)
-
             }
             val myIntent = Intent(this, MainActivity::class.java)
             setResult(RESULT_OK, myIntent)
