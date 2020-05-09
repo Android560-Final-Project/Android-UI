@@ -10,10 +10,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ui.addtransaction.AddTransaction"></activity>
-        <activity android:name=".ui.addaccount.AddAccount"></activity>
-        <activity android:name=".ui.transactions.ViewTransactions"></activity>
+        android:theme="@style/Theme.MaterialComponents.Light">
+        <activity android:name=".ui.addtransaction.AddTransaction" />
+        <activity android:name=".ui.addaccount.AddAccount" />
+        <activity android:name=".ui.transactions.ViewTransactions" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">

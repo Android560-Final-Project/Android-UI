@@ -1,6 +1,5 @@
 package com.example.finalproject.ui.addtransaction
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -9,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import com.example.finalproject.CurrencyExchangeService
 import com.example.finalproject.MainActivity
 import com.example.finalproject.R
@@ -23,7 +23,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
-class AddTransaction : Activity() {
+class AddTransaction : AppCompatActivity() {
     val TAG = "ADD_TRANSACTION"
     val BASE_URL = "https://exchangerateservice.firebaseapp.com/"
     private lateinit var currencyApi: CurrencyExchangeService
@@ -129,7 +129,7 @@ class AddTransaction : Activity() {
     }
 
     fun cancel(view: View?){
-        val myIntent = Intent(this, MainActivity::class.java)
+        val myIntent = Intent()
         setResult(RESULT_CANCELED, myIntent)
         finish()
     }
