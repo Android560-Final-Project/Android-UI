@@ -44,7 +44,7 @@ class AddAccount : AppCompatActivity() {
             val balance = account_value.text.toString().toDouble()
             val type = account_type.selectedItem.toString()
             val currency = currency_type.selectedItem.toString()
-            val account = AccountEntity(customerId, type, name, balance, currency)
+            val account = AccountEntity(customerId, type, name, balance, currency, Date())
 
 
             thread {

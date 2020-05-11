@@ -17,7 +17,7 @@ import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
-    private val exampleEmail = "example@gmail.com"
+    private val exampleEmail = "michael.scott@gmail.com"
     private lateinit var accounts: ArrayList<AccountEntity>
     private lateinit var accountDAO: AccountEntityDAO
     private lateinit var customerDAO: CustomerEntityDAO
@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
             }
             runOnUiThread{
                 accounts_recycler_view.adapter?.notifyDataSetChanged()
+                display_message.text = "Welcome ${customer.name}"
             }
         }
     }
@@ -61,17 +62,16 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         thread {
             var customer = customerDAO.getCustomer(exampleEmail)
-            customerId = customer.customerId
             var message: String =""
 
             if(customer == null) {
                 // insert the first entities into the db
 
                 Log.d(TAG, "Customer with email $exampleEmail does not exist. Adding to DB")
-                val customerEntity = CustomerEntity("example name", exampleEmail, "860-371-8881")
+                val customerEntity = CustomerEntity("Michael Scott", exampleEmail, "860-354-8907")
                 customerId = customerDAO.addCustomer(customerEntity).toInt()
-                val accountEntity = AccountEntity(customerId,"checkings", "myaccount", 300.00, "USD")
-                val accountEntity2 = AccountEntity(customerId,"savings", "my-retirement-fund", 300.00, "USD")
+                val accountEntity = AccountEntity(customerId,"Checkings", "Checkings", 300.00, "USD", Date())
+                val accountEntity2 = AccountEntity(customerId,"Savings", "RetirementFund", 300.00, "USD", Date())
 
                 val account1Id = accountDAO.addAccount(accountEntity)
                 val account2Id = accountDAO.addAccount(accountEntity2)
@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                 updateAccounts(customerId)
                 message = "Welcome new customer ${customerEntity.name}!!"
             } else {
+                customerId = customer.customerId
                 Log.d(TAG, "Customer with $exampleEmail already exists. Customer id $customerId")
                 message = "Welcome ${customer.name}"
                 updateAccounts(customerId)

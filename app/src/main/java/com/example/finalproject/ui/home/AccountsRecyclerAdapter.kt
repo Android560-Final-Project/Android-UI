@@ -34,7 +34,7 @@ class AccountsRecyclerAdapter(private val accounts: ArrayList<AccountEntity>, pr
         val accountBalance = currencyFormater.format(account.balance).toString()
         holder.accountName.text = account.name
         holder.balance.text = "Balance ${accountBalance}"
-        holder.lastTransaction.text = accountBalance
+        holder.lastTransaction.text = account.lastTransactionDate.toString()
         holder.addTransactionButton.setOnClickListener {
             val intent = Intent(it.context, AddTransaction::class.java)
             intent.putExtra("accountId", account.accountId)
