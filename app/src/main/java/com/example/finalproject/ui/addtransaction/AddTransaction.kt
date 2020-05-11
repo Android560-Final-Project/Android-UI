@@ -1,5 +1,6 @@
 package com.example.finalproject.ui.addtransaction
 
+import android.accounts.Account
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -19,6 +20,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
@@ -79,7 +81,11 @@ class AddTransaction : AppCompatActivity() {
     }
 
     private fun updateTotal(amount: Double, exchangeRate: Double) {
-        total_cost.text = "Total Cost: ${(amount * exchangeRate)}"
+        var account = account_spinner.selectedItem as AccountEntity
+        val accountCurrency = account.currency
+        val currencyLocale = CurrencyType.values().find { currencyType -> currencyType.currencyCode == accountCurrency }?.locale
+        val currencyFormatter = NumberFormat.getCurrencyInstance(currencyLocale)
+        total_cost.text = "Total Cost: ${currencyFormatter.format(amount * exchangeRate)}"
     }
 
     private fun callExchangeRateApi(fromCurrency: String, toCurrency: String) {
